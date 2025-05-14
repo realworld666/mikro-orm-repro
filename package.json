@@ -2,17 +2,26 @@
   "name": "@mikro-orm/reproduction",
   "private": true,
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start": "jest",
-    "test": "jest"
+    "test": "jest",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:push": "node --loader ts-node/esm src/push-entities.ts"
   },
   "author": "Martin Adamek",
   "license": "MIT",
   "dependencies": {
-    "@mikro-orm/core": "next",
-    "@mikro-orm/sqlite": "next",
+
+    "@mikro-orm/cli": "^6.4.15",
+    "@mikro-orm/core": "^6.4.15",
+    "@mikro-orm/migrations": "^6.4.15",
+    "@mikro-orm/postgresql": "^6.4.15",
+    "@mikro-orm/reflection": "^6.4.15",
+    "@mikro-orm/entity-generator": "^6.4.15",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
