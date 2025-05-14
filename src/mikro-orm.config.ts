@@ -4,7 +4,6 @@ import { Migrator } from '@mikro-orm/migrations';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import 'dotenv/config';
-import path from 'path';
 import {BidHistory} from "./entities/BidHistory.js";
 import {League} from "./entities/League.js";
 import { Manager } from './entities/Manager.js';
