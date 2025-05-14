@@ -1,5 +1,5 @@
 import { Factory } from 'interface-forge';
-import {Team} from "../entities/Team";
+import {Team} from "../entities/Team.js";
 
 export const TeamsFactory = new Factory<Team>((factory: Factory<Team>, iteration: number) => {
   return {

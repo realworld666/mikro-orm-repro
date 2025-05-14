@@ -20,7 +20,7 @@ export default defineConfig({
     Team,
     TransferListedPlayer,
   ],
-  dbName: process.env.DATABASE_NAME || 'jfg',
+  dbName: 'mikro_test',
   driver: PostgreSqlDriver,
   host: 'localhost',
   port: 5432,

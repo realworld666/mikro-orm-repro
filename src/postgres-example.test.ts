@@ -1,5 +1,7 @@
 import { Entity, MikroORM, PrimaryKey, Property } from '@mikro-orm/core';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import config from './mikro-orm.config';
+import {TransferListedPlayer} from "./entities/TransferListedPlayer.js";
 
 @Entity()
 class User {
@@ -21,53 +23,31 @@ class User {
 let orm: MikroORM<PostgreSqlDriver>;
 
 beforeAll(async () => {
-  orm = await MikroORM.init<PostgreSqlDriver>({
-    type: 'postgresql',
-    dbName: 'mikro_test',
-    user: 'mikro',
-    password: 'mikro',
-    host: 'localhost',
-    port: 5432,
-    entities: [User],
-    debug: ['query', 'query-params'],
-    allowGlobalContext: true, // only for testing
-  });
-  await orm.schema.refreshDatabase(); // This will drop and recreate the schema
+  orm = await MikroORM.init<PostgreSqlDriver>(config);
 });
 
 afterAll(async () => {
   await orm.close(true);
 });
 
-test('PostgreSQL basic CRUD example', async () => {
-  orm.em.create(User, { name: 'Foo', email: 'foo@example.com' });
-  await orm.em.flush();
-  orm.em.clear();
-
-  const user = await orm.em.findOneOrFail(User, { email: 'foo@example.com' });
-  expect(user.name).toBe('Foo');
-  user.name = 'Bar';
-  await orm.em.flush();
-  orm.em.clear();
-
-  const updatedUser = await orm.em.findOneOrFail(User, { email: 'foo@example.com' });
-  expect(updatedUser.name).toBe('Bar');
-  
-  orm.em.remove(updatedUser);
-  await orm.em.flush();
-
-  const count = await orm.em.count(User, { email: 'foo@example.com' });
-  expect(count).toBe(0);
-});
-
 // Add your reproduction test case here
-test('Your reproduction test case', async () => {
-  // Add your specific test case that reproduces the issue you're having
-  // This is where you would implement the specific scenario that's causing problems
-  // in your production environment
-  
-  // Example:
-  // 1. Create entities with specific relationships
-  // 2. Perform operations that trigger the issue
-  // 3. Assert the expected vs actual behavior
+test('get transfer listed players', async () => {
+  const em = orm.em.fork();
+  const players = await em.find(
+      TransferListedPlayer,
+      {
+        auctionEndTime: { $lt: Date.now() },
+      },
+      {
+        populate: [
+          'player',
+          'player.team',
+          'player.team.manager',
+          'bidHistory',
+          'bidHistory.team',
+        ],
+      }
+  );
+  expect(players.length).toBe(10);
+    expect(players[0].player.playerId).not.toEqual(players[1].player.playerId);
 });

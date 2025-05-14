@@ -1,7 +1,7 @@
 import { Ref, Rel } from '@mikro-orm/core';
 import { Factory } from 'interface-forge';
-import {Player} from "../entities/Player";
-import {League} from "../entities/League";
+import {Player} from "../entities/Player.js";
+import {League} from "../entities/League.js";
 
 export const PlayerFactory = new Factory<Player>((factory: Factory<Player>, iteration: number) => {
   return {
@@ -17,7 +17,8 @@ export const PlayerFactory = new Factory<Player>((factory: Factory<Player>, iter
     seed: factory.number.int({ min: 0, max: 1000000 }),
     value: factory.number.int({ min: 100000, max: 10000000 }),
     energy: factory.number.int({ min: 0, max: 100 }),
-    lastMatchPlayed: factory.date.recent({days:1}),
+    lastMatchPlayed: factory.date.recent({days:1}).getTime(),
+    suspendedForGames: factory.number.int({ min: 0, max: 10 }),
     attributes: {
       player: {} as Rel<Player>,
       reflexesCurrent: factory.number.int({ min: 1, max: 20 }),
